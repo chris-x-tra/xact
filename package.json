@@ -1,0 +1,23 @@
+{
+	"name": "xact",
+	"version": "0.1.0",
+	"description": "Minimaler Eintrag im Datei-Aktionsmenü im Nextcloud Filebrowser",
+	"license": "AGPL-3.0-or-later",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"build": "vite build",
+		"watch": "vite build --watch",
+		"dev": "vite build --mode development"
+	},
+	"dependencies": {
+		"@nextcloud/axios": "^2.5.0",
+		"@nextcloud/event-bus": "^3.3.0",
+		"@nextcloud/files": "^4.0.0",
+		"@nextcloud/l10n": "^3.1.0",
+		"@nextcloud/router": "^3.0.1"
+	},
+	"devDependencies": {
+		"vite": "^7.1.10"
+	}
+}

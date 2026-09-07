@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
+    <id>xact</id>
+    <name>xact</name>
+    <summary>Minimaler Eintrag im Datei-Aktionsmenü</summary>
+    <description>Fügt einen einzelnen Eintrag ins Datei-Aktionsmenü (Rechtsklick / "..."-Menü) im Filebrowser hinzu. Sonst nichts.</description>
+    <version>0.1.0</version>
+    <licence>agpl</licence>
+    <author>Chrissie</author>
+    <namespace>Xact</namespace>
+    <category>files</category>
+    <website>https://example.com/xact</website>
+    <bugs>https://example.com/xact/issues</bugs>
+    <repository>https://example.com/xact</repository>
+    <dependencies>
+        <nextcloud min-version="33" max-version="35"/>
+    </dependencies>
+</info>
