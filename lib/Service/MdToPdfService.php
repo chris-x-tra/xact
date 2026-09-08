@@ -1,15 +1,24 @@
 <?php
 
 declare(strict_types=1);
-
 namespace OCA\Xact\Service;
 
+require_once __DIR__ . '/PilcrowToBreakParser.php';
+require_once __DIR__ . '/PagebreakParser.php';
+require_once __DIR__ . '/CustomShortcutsExtension.php';
+
+use OCA\Xact\Service\CustomShortcutsExtension;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+use League\CommonMark\MarkdownConverter;
 use League\CommonMark\CommonMarkConverter;
+
 use Mpdf\Mpdf;
 use OCP\Files\File;
 use OCP\Files\IRootFolder;
 use OCP\IL10N;
 use OCP\IUserSession;
+
 
 class MdToPdfService {
 	private IRootFolder $rootFolder;
@@ -52,7 +61,6 @@ class MdToPdfService {
 		$content = $file->getContent();
 		$parentFolder = $file->getParent();
 		$pdfFileName = pathinfo($file->getName(), PATHINFO_FILENAME) . '.pdf';
-
 //$myfile = fopen("/tmp/tst1.txt", "w");
 //fwrite($myfile, $content);
 //fclose($myfile);
@@ -70,10 +78,20 @@ class MdToPdfService {
 	}
 
 	private function markdownToHtml(string $markdown): string {
-		$converter = new CommonMarkConverter([
-			'html_input' => 'allow',
-			'allow_unsafe_links' => false,
-		]);
+		$config = [
+		    'html_input' => 'allow',
+		    'allow_unsafe_links' => false,
+				'renderer' => [
+				    'block_separator' => "\n",
+				    'inner_separator' => "\n",
+				    'soft_break'      => "<br>\n",
+				],
+
+		];
+		$environment = new Environment($config);
+		$environment->addExtension(new CommonMarkCoreExtension());
+		$environment->addExtension(new CustomShortcutsExtension());
+		$converter = new MarkdownConverter($environment);
 		return $converter->convert($markdown)->getContent();
 	}
 
@@ -189,7 +207,6 @@ blockquote {
     margin-left: 20pt;
     font-family: "OfficinaSanITCBooIta"
 }
-
 </style>
 
 </head>
