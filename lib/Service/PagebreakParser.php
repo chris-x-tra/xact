@@ -5,6 +5,7 @@ use League\CommonMark\Extension\CommonMark\Node\Block\ThematicBreak;
 use League\CommonMark\Parser\Inline\InlineParserInterface;
 use League\CommonMark\Parser\Inline\InlineParserMatch;
 use League\CommonMark\Parser\InlineParserContext; 
+use League\CommonMark\Extension\CommonMark\Node\Inline\HtmlInline;
 
 class PagebreakParser implements InlineParserInterface
 {
@@ -20,7 +21,10 @@ class PagebreakParser implements InlineParserInterface
         $inlineContext->getCursor()->advanceBy(1);
 
         // Fügt ein ThematicBreak (<hr>) in den aktuellen Dokumenten-Stream ein
-        $inlineContext->getContainer()->appendChild(new ThematicBreak());
+        //$inlineContext->getContainer()->appendChild(new ThematicBreak());
+
+        // Erzeugt direkt den mPDF-Befehl als Inline-HTML
+        $inlineContext->getContainer()->appendChild(new HtmlInline('<pagebreak />'));
 
         return true;
     }
