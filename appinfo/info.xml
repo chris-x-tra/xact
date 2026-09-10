@@ -4,7 +4,7 @@
     <id>xact</id>
     <name>xact</name>
     <summary>Convert Markdown .md to PDF .pdf, optimized for (DIN-)Letters</summary>
-    <description>Adds action in file browser Menu</description>
+    <description>Adds action in file browser Menu to convert markdown files to pdf files. Although this will work for any markdown files, there are some special tweaks for (DIN-) letters which is my special use case - YMMV.</description>
     <version>0.1.1</version>
     <licence>agpl</licence>
     <author>Chrissie Brown</author>

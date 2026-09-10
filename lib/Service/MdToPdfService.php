@@ -1,7 +1,8 @@
 <?php
-
 declare(strict_types=1);
 namespace OCA\Xact\Service;
+
+define('DEBUG', false);
 
 require_once __DIR__ . '/PilcrowToBreakParser.php';
 require_once __DIR__ . '/PagebreakParser.php';
@@ -61,14 +62,18 @@ class MdToPdfService {
 		$content = $file->getContent();
 		$parentFolder = $file->getParent();
 		$pdfFileName = pathinfo($file->getName(), PATHINFO_FILENAME) . '.pdf';
-//$myfile = fopen("/tmp/tst1.txt", "w");
-//fwrite($myfile, $content);
-//fclose($myfile);
+		if (DEBUG) {
+			$myfile = fopen("/tmp/tst1.txt", "w");
+			fwrite($myfile, $content);
+			fclose($myfile);
+		}
 		$html = $this->markdownToHtml($content);
-//$myfile = fopen("/tmp/tst2.txt", "w");
-//fwrite($myfile, $html);
-//fclose($myfile);
-		$pdf = $this->htmlToPdf($html);
+		if (DEBUG) {
+			$myfile = fopen("/tmp/tst2.txt", "w");
+			fwrite($myfile, $html);
+			fclose($myfile);
+		}
+		$pdf = $this->htmlToPdf($html, $pdfFileName);
 
 		if ($parentFolder->nodeExists($pdfFileName)) {
 			$parentFolder->get($pdfFileName)->delete();
@@ -95,7 +100,7 @@ class MdToPdfService {
 		return $converter->convert($markdown)->getContent();
 	}
 
-	private function htmlToPdf(string $html): string {
+	private function htmlToPdf(string $html, string $filename = ''): string {
 		$tempDir = sys_get_temp_dir() . '/xact';
 		if (!is_dir($tempDir)) {
 			mkdir($tempDir, 0755, true);
@@ -111,6 +116,14 @@ class MdToPdfService {
 			'tempDir' => $tempDir,
 		]);
 
+                // Right-aligned page number with total pages
+		if (!empty($filename)) 
+			$filename = $filename . " - ";
+		$mpdf->SetHTMLFooter('
+		    <div style="text-align: right; font-weight: normal; font-style: normal; font-size: 8pt;">'
+			. $filename . ' Seite {PAGENO} von {nbpg}
+		    </div> ');
+
 		$styledHtml = $this->wrapHtml($html);
 		$mpdf->WriteHTML($styledHtml);
 
@@ -122,13 +135,11 @@ class MdToPdfService {
 <html>
 <head>
     <meta charset="utf-8">
+<!-- style from original md2pdf - modified -->
     <style>
-        body { font-family: "DejaVu Sans", sans-serif; font-size: 11pt; line-height: 1.6; color: #333; }
-        h1 { font-size: 24pt; color: #111; border-bottom: 2px solid #eee; padding-bottom: 8px; }
-        h2 { font-size: 18pt; color: #222; border-bottom: 1px solid #eee; padding-bottom: 4px; }
-        h3 { font-size: 14pt; color: #333; }
-        h4 { font-size: 12pt; color: #444; }
-        p { margin: 0 0 10px; }
+        h1 { font-size: 22pt; border-bottom: 2px solid #eee; padding-bottom: 8px; }
+        h2 { font-size: 18pt; border-bottom: 1px solid #eee; padding-bottom: 4px; }
+        h3 { font-size: 14pt; }
         code { background: #f5f5f5; border: 1px solid #e0e0e0; padding: 2px 4px; font-size: 10pt; border-radius: 3px; }
         pre { background: #f5f5f5; border: 1px solid #e0e0e0; padding: 12px; overflow-x: auto; border-radius: 4px; }
         pre code { border: none; padding: 0; background: none; }
@@ -146,53 +157,43 @@ class MdToPdfService {
 <style>
 body {
     margin:0;
-}
-#wrapper {
-    margin-top: 0.6cm;
-    margin-bottom: 2cm;
-    margin-left: 2.4cm !important;
-    margin-right: 2.5cm
-}
-body {
     font-family: "OfficinaSanITCBoo";
     font-size: 10pt
 }
-h1 {
-    font-family: "OfficinaSanITCBol";
-    font-size: 10pt;
-    font-weight: normal;
-    margin-bottom: 10pt;
-}
-h2 {
-    font-family: "OfficinaSanITCBol";
-    font-size: 10pt;
-    font-weight: normal;
-    margin-bottom: 10pt
-}
+/* align left */
 h3 {
+    font-family: "OfficinaSanITCBol";
+    text-align: left;
+    font-size: 10pt;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+}
+/* align center */
+h4 {
+    font-family: "OfficinaSanITCBol";
     text-align: center;
     font-size: 10pt;
-    font-weight: normal
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
 }
-h4 {
+/* align right */
+h5 {
+    font-family: "OfficinaSanITCBol";
     text-align: right;
     font-size: 10pt;
-    font-weight: normal
-}
-h5 {
-    font-family: "RotisSansSerif";
-    font-size: 18pt;
     font-weight: normal;
-    margin-top: 0;
-    margin-bottom: 12pt
+    margin: 0;
+    padding: 0;
 }
-
+/* small */
 h6 {
     font-family: "RotisSansSerif";
     font-size: 8pt;
     font-weight: normal;
-    margin-top: 4pt;
-    margin-bottom: 0
+    margin: 0;
+    padding: 0;
 }
 strong {
     font-family: "OfficinaSanITCBol"
