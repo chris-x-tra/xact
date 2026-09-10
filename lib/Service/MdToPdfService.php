@@ -116,6 +116,14 @@ class MdToPdfService {
 			'tempDir' => $tempDir,
 		]);
 
+		//  Hintergrund fur Faltmarken definieren
+		$svgBackground = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMTBtbSIgaGVpZ2h0PSIyOTdtbSI+PGxpbmUgeDE9IjVtbSIgeTE9IjEwNW1tIiB4Mj0iOC41bW0iIHkyPSIxMDVtbSIgc3Ryb2tlPSIjOTk5OTk5IiBzdHJva2Utd2lkdGg9IjAuMzNtbSIvPjxsaW5lIHgxPSI1bW0iIHkxPSIyMTBtbSIgeDI9IjguNW1tIiB5Mj0iMjEwbW0iIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSIwLjMzbW0iLz48L3N2Zz4=';
+
+		//  Als Hintergrundbild fur die erste/alle Seiten setzen
+		$mpdf->SetDefaultBodyCSS('background-image', "url('$svgBackground')");
+		$mpdf->SetDefaultBodyCSS('background-repeat', 'no-repeat');
+		$mpdf->SetDefaultBodyCSS('background-position', 'top left');
+
                 // Right-aligned page number with total pages
 		if (!empty($filename)) 
 			$filename = $filename . " - ";
@@ -125,13 +133,18 @@ class MdToPdfService {
 		    </div> ');
 
 		$styledHtml = $this->wrapHtml($html);
+		if (DEBUG) {
+			$myfile = fopen("/tmp/tst3.txt", "w");
+			fwrite($myfile, $styledHtml);
+			fclose($myfile);
+		}
 		$mpdf->WriteHTML($styledHtml);
 
 		return $mpdf->Output('', 'S');
 	}
 
 	private function wrapHtml(string $html): string {
-		return '<!DOCTYPE html>
+		$return = '<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -209,9 +222,11 @@ blockquote {
     font-family: "OfficinaSanITCBooIta"
 }
 </style>
-
 </head>
+
 <body>' . $html . '</body>
 </html>';
+
+        	return $return;
 	}
 }
