@@ -6,7 +6,7 @@ Fügt Für Markdown-Dateien einen Eintrag "Als PDF exportieren"
 im Filebrowser unter Rechtsklick-Menu / Drei-Punkte-Menu hinzu.
 
 Es ist eine spezielle Anpassung erst mal nur für (DIN-)Briefe:
-- soft_break ist <br>
+- soft_break ist Hard Break BR
 - Leerzeilen können mit dem Pilgrim-Zeichen ¶ eingegeben werden
 - Seitenumbruch kann mit dem Zeichen Pagebreak ⎘  eingegeben werden
 - Diese Zeichen sollten einmal via Nextcloud Text Editor eingegeben werden können: Oben zwei Knöpfe in der Leiste
@@ -14,6 +14,11 @@ Es ist eine spezielle Anpassung erst mal nur für (DIN-)Briefe:
 - es wird in der Fusszeile Seite 1/x hinzugefügt
 - es werden Faltmarken hinzugefügt
 - Diese Funktionen müssen einmal in xact konfigurierbar sein, genauso wie die Papiergröße/Ränder. 
+
+Dokumentaion hier:
+
+https://www.x-tra-designs.org/metallum/nextcloud-xact-convert-md-letters-to-pdf.html
+
 
 Die Logik wurde dafür 1:1 aus dem Projekt md2pdf 
 übernommen (League CommonMark + mpdf), nur Namespace/Appname 
