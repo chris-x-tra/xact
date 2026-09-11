@@ -22,6 +22,16 @@ use OCP\IUserSession;
 
 
 class MdToPdfService {
+
+    private $format          = 'A4';
+    private $margin_left     = 20;
+    private $margin_right    = 20;
+    private $margin_top      = 20;
+    private $margin_bottom   = 20;
+    private $showWindowGuide = 1;
+    private $showFoldMarks   = 1;
+    private $showFooter      = 1;
+
 	private IRootFolder $rootFolder;
 	private IUserSession $userSession;
 	private IL10N $l;
@@ -107,32 +117,67 @@ class MdToPdfService {
 		}
 
 		$mpdf = new Mpdf([
-			'mode' => 'utf-8',
-			'format' => 'A4',
-			'margin_left' => 20,
-			'margin_right' => 20,
-			'margin_top' => 20,
-			'margin_bottom' => 20,
+			'mode' => $this->mode,
+			'format' => $this->format,
+			'margin_left' => $this->margin_left,
+			'margin_right' => $this->margin_right,
+			'margin_top' => $this->margin_top,
+			'margin_bottom' => $this->margin_bottom,
 			'tempDir' => $tempDir,
 		]);
 
-		//  Hintergrund fur Faltmarken definieren
-		$svgBackground = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMTBtbSIgaGVpZ2h0PSIyOTdtbSI+PGxpbmUgeDE9IjVtbSIgeTE9IjEwNW1tIiB4Mj0iOC41bW0iIHkyPSIxMDVtbSIgc3Ryb2tlPSIjOTk5OTk5IiBzdHJva2Utd2lkdGg9IjAuMzNtbSIvPjxsaW5lIHgxPSI1bW0iIHkxPSIyMTBtbSIgeDI9IjguNW1tIiB5Mj0iMjEwbW0iIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSIwLjMzbW0iLz48L3N2Zz4=';
 
-		//  Als Hintergrundbild fur die erste/alle Seiten setzen
-		$mpdf->SetDefaultBodyCSS('background-image', "url('$svgBackground')");
-		$mpdf->SetDefaultBodyCSS('background-repeat', 'no-repeat');
-		$mpdf->SetDefaultBodyCSS('background-position', 'top left');
+                // Faltmarken + DIN 5008 Fensterkreuze in einem einzigen SVG
+                $svgContent = '<svg xmlns="http://www.w3.org/2000/svg" width="210mm" height="297mm">';
+
+                if ($this->showFoldMarks) {
+                    $svgContent .= '
+                    <!-- Faltmarken links -->
+                    <g stroke="#999999" stroke-width="0.33mm">
+                        <line x1="5mm" y1="105mm" x2="8.5mm" y2="105mm"/>
+                        <line x1="5mm" y1="210mm" x2="8.5mm" y2="210mm"/>
+                    </g>';
+                }
+
+                if ($this->showWindowGuide) {
+                    $svgContent .= '
+                    <!-- DIN 5008 Sichtfenster (Hellgraue Kreuze) -->
+                    <g stroke="#cccccc" stroke-width="0.25mm">
+                        <!-- Ecke Links-Oben (20mm, 55mm) -->
+                        <line x1="17mm" y1="55mm" x2="23mm" y2="55mm"/><line x1="20mm" y1="52mm" x2="20mm" y2="58mm"/>
+                        <!-- Ecke Rechts-Oben (110mm, 55mm) -->
+                        <line x1="107mm" y1="55mm" x2="113mm" y2="55mm"/><line x1="110mm" y1="52mm" x2="110mm" y2="58mm"/>
+                        <!-- Ecke Links-Unten (20mm, 100mm) -->
+                        <line x1="17mm" y1="100mm" x2="23mm" y2="100mm"/><line x1="20mm" y1="97mm" x2="20mm" y2="103mm"/>
+                        <!-- Ecke Rechts-Unten (110mm, 100mm) -->
+                        <line x1="107mm" y1="100mm" x2="113mm" y2="100mm"/><line x1="110mm" y1="97mm" x2="110mm" y2="103mm"/>
+                    </g>';
+                }
+
+                $svgContent .= '</svg>';
+                $svgBase64 = 'data:image/svg+xml;base64,' . base64_encode($svgContent);
+
+                $firstPageStyle = '';
+                if ($this->showFoldMarks || $this->showWindowGuide) {
+                    $firstPageStyle = "
+                    <style>
+                        @page :first {
+                            background-image: url('$svgBase64');
+                            background-repeat: no-repeat;
+                            background-position: top left;
+                        }
+                    </style>";
+                }
 
                 // Right-aligned page number with total pages
-		if (!empty($filename)) 
-			$filename = $filename . " - ";
-		$mpdf->SetHTMLFooter('
-		    <div style="text-align: right; font-weight: normal; font-style: normal; font-size: 8pt;">'
-			. $filename . ' Seite {PAGENO} von {nbpg}
-		    </div> ');
+                if ($this->showFooter) {
+                    if (!empty($filename)) 
+                            $filename = $filename . " - ";
+                    $mpdf->SetHTMLFooter('<div style="text-align: right; font-weight: normal; font-style: normal; font-size: 8pt;">'
+                            . $filename . ' Seite {PAGENO} von {nbpg} </div> ');
+                 }
 
-		$styledHtml = $this->wrapHtml($html);
+                $styledHtml = $firstPageStyle . $this->wrapHtml($html);
 		if (DEBUG) {
 			$myfile = fopen("/tmp/tst3.txt", "w");
 			fwrite($myfile, $styledHtml);
