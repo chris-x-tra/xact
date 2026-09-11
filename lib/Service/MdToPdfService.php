@@ -23,14 +23,14 @@ use OCP\IUserSession;
 
 class MdToPdfService {
 
-    private $format          = 'A4';
-    private $margin_left     = 20;
-    private $margin_right    = 20;
-    private $margin_top      = 20;
-    private $margin_bottom   = 20;
-    private $showWindowGuide = 1;
-    private $showFoldMarks   = 1;
-    private $showFooter      = 1;
+        private $format          ;
+        private $margin_left     ;
+        private $margin_right    ;
+        private $margin_top      ;
+        private $margin_bottom   ;
+        private $showWindowGuide ;
+        private $showFoldMarks   ;
+        private $showFooter      ;
 
 	private IRootFolder $rootFolder;
 	private IUserSession $userSession;
@@ -44,6 +44,18 @@ class MdToPdfService {
 		$this->rootFolder = $rootFolder;
 		$this->userSession = $userSession;
 		$this->l = $l;
+
+                $config = \OC::$server->get(\OCP\IConfig::class);
+
+                // Liest Werte aus config/config.php mit Fallbacks:
+                $this->format          = $config->getSystemValue('xact_format', 'A4');
+                $this->margin_left     = $config->getSystemValue('xact_margin_left', 20);
+                $this->margin_right    = $config->getSystemValue('xact_margin_right', 20);
+                $this->margin_top      = $config->getSystemValue('xact_margin_top', 20);
+                $this->margin_bottom   = $config->getSystemValue('xact_margin_bottom', 20);
+                $this->showWindowGuide = $config->getSystemValue('xact_show_window_guide', true);
+                $this->showFoldMarks   = $config->getSystemValue('xact_show_fold_marks', true);
+                $this->showFooter      = $config->getSystemValue('xact_show_footer', true);
 	}
 
 	public function convert(int $fileId): File {
