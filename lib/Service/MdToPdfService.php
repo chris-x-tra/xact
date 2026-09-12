@@ -168,19 +168,25 @@ class MdToPdfService {
 
                 $svgContent .= '</svg>';
                 $svgBase64 = 'data:image/svg+xml;base64,' . base64_encode($svgContent);
+                $firstPageHeader = '';
 
                 if ($this->showFoldMarks || $this->showWindowGuide) {
-                    // 1. Header-Definition + Aktivierung NUR für die erste Seite (:first)
                     $firstPageHeader = '
+                    <!-- 1. Header definieren -->
                     <htmlpageheader name="FirstPageMarks">
                         <div style="position: absolute; top: 0; left: 0; width: 210mm; height: 297mm; z-index: -1;">
                             <img src="' . $svgBase64 . '" style="width: 210mm; height: 297mm;" />
                         </div>
                     </htmlpageheader>
-                    <sethtmlpageheader name="FirstPageMarks" value="on" show-this-page="1" />';
+
+                    <!-- 2. Für Seite 1 aktivieren -->
+                    <sethtmlpageheader name="FirstPageMarks" value="on" show-this-page="1" />
+                    
+                    <!-- 3. Sofort für alle Folgeseiten deaktivieren -->
+                    <sethtmlpageheader name="FirstPageMarks" value="off" />';
                 }
 
-                // 2. Footer wie gewohnt (funktioniert jetzt uneingeschränkt auf ALLEN Seiten)
+                // footer as usual
                 if ($this->showFooter) {
                     if (!empty($filename)) {
                         $filename = $filename . " - ";
@@ -191,7 +197,7 @@ class MdToPdfService {
                         </div>');
                 }
 
-                // 3. Header-Tag ganz am Anfang des Body injizieren
+                // inject header on start
                 $styledHtml = $this->wrapHtml($firstPageHeader . $html);
 
 		if (DEBUG) {
