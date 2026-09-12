@@ -204,83 +204,82 @@ class MdToPdfService {
 		$return = '<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-<!-- style from original md2pdf - modified -->
-    <style>
-        h1 { font-size: 22pt; border-bottom: 2px solid #eee; padding-bottom: 8px; }
-        h2 { font-size: 18pt; border-bottom: 1px solid #eee; padding-bottom: 4px; }
-        h3 { font-size: 14pt; }
-        code { background: #f5f5f5; border: 1px solid #e0e0e0; padding: 2px 4px; font-size: 10pt; border-radius: 3px; }
-        pre { background: #f5f5f5; border: 1px solid #e0e0e0; padding: 12px; overflow-x: auto; border-radius: 4px; }
-        pre code { border: none; padding: 0; background: none; }
-        blockquote { border-left: 4px solid #ddd; padding-left: 16px; margin-left: 0; color: #666; }
-        table { border-collapse: collapse; width: 100%; margin: 10px 0; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background: #f5f5f5; }
-        img { max-width: 100%; }
-        a { color: #0066cc; }
-        ul, ol { margin: 0 0 10px; padding-left: 24px; }
-        hr { border: none; border-top: 1px solid #eee; margin: 20px 0; }
-    </style>
+<meta charset="utf-8">
 
-<!-- Style extended by https://maennig.de/briefe-markdown -->
 <style>
+h1 { font-size: 22pt; border-bottom: 2px solid #eee; padding-bottom: 8px; }
+h2 { font-size: 18pt; border-bottom: 1px solid #eee; padding-bottom: 4px; }
+h3 { font-size: 14pt; }
+code { background: #f5f5f5; border: 1px solid #e0e0e0; padding: 2px 4px; font-size: 10pt; border-radius: 3px; }
+pre { background: #f5f5f5; border: 1px solid #e0e0e0; padding: 12px; overflow-x: auto; border-radius: 4px; }
+pre code { border: none; padding: 0; background: none; }
+
+table { border-collapse: collapse; width: 100%; margin: 10px 0; }
+th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+th { background: #f5f5f5; }
+a { color: #0066cc; }
+ol, ul { margin: 0 0 10px; padding-left: 24px; }
+hr { border: none; border-top: 1px solid #eee; margin: 20px 0; }
+img { max-width: 100%; }
+
 body {
     margin:0;
-    font-family: "OfficinaSanITCBoo";
-    font-size: 10pt
+    font-family: "OfficinaSanITC", "ITC Officina Sans", "ITC Officina Sans", sans-serif;
+/* font-size: 12pt */
 }
 /* align left */
 h3 {
-    font-family: "OfficinaSanITCBol";
+    font-family: "OfficinaSanITC", "ITC Officina Sans", "ITC Officina Sans", sans-serif;
+    font-size: 12pt;
     text-align: left;
-    font-size: 10pt;
     font-weight: normal;
     margin: 0;
     padding: 0;
 }
 /* align center */
 h4 {
-    font-family: "OfficinaSanITCBol";
+    font-family: "OfficinaSanITC", "ITC Officina Sans", "ITC Officina Sans", sans-serif;
+    font-size: 12pt;
     text-align: center;
-    font-size: 10pt;
     font-weight: normal;
     margin: 0;
     padding: 0;
 }
 /* align right */
 h5 {
-    font-family: "OfficinaSanITCBol";
+    font-family: "OfficinaSanITC", "ITC Officina Sans", "ITC Officina Sans", sans-serif;
+    font-size: 12pt;
     text-align: right;
-    font-size: 10pt;
     font-weight: normal;
     margin: 0;
     padding: 0;
 }
 /* small */
 h6 {
-    font-family: "RotisSansSerif";
+    font-family: "OfficinaSanITC", "ITC Officina Sans", "ITC Officina Sans", sans-serif;
     font-size: 8pt;
     font-weight: normal;
     margin: 0;
     padding: 0;
 }
 strong {
-    font-family: "OfficinaSanITCBol"
+    font-family: "OfficinaSanITCBol", "ITC Officina Sans Bol", "ITC Officina Sans", sans-serif;
 }
 em {
-    font-family: "OfficinaSanITCBooIta"
+    font-family: "OfficinaSanITCIta"
 }
 ul, ol {
     padding-left: 20pt
 }
 blockquote {
+    border-inline-start: none;
+    color: black;
     margin-left: 20pt;
-    font-family: "OfficinaSanITCBooIta"
+    font-family: "OfficinaSanITCIta"
 }
 </style>
-</head>
 
+</head>
 <body>' . $html . '</body>
 </html>';
 
