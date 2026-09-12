@@ -129,7 +129,7 @@ class MdToPdfService {
 		}
 
 		$mpdf = new Mpdf([
-			'mode' => $this->mode,
+			'mode' => 'utf-8',
 			'format' => $this->format,
 			'margin_left' => $this->margin_left,
 			'margin_right' => $this->margin_right,
@@ -169,27 +169,31 @@ class MdToPdfService {
                 $svgContent .= '</svg>';
                 $svgBase64 = 'data:image/svg+xml;base64,' . base64_encode($svgContent);
 
-                $firstPageStyle = '';
                 if ($this->showFoldMarks || $this->showWindowGuide) {
-                    $firstPageStyle = "
-                    <style>
-                        @page :first {
-                            background-image: url('$svgBase64');
-                            background-repeat: no-repeat;
-                            background-position: top left;
-                        }
-                    </style>";
+                    // 1. Header-Definition + Aktivierung NUR für die erste Seite (:first)
+                    $firstPageHeader = '
+                    <htmlpageheader name="FirstPageMarks">
+                        <div style="position: absolute; top: 0; left: 0; width: 210mm; height: 297mm; z-index: -1;">
+                            <img src="' . $svgBase64 . '" style="width: 210mm; height: 297mm;" />
+                        </div>
+                    </htmlpageheader>
+                    <sethtmlpageheader name="FirstPageMarks" value="on" show-this-page="1" />';
                 }
 
-                // Right-aligned page number with total pages
+                // 2. Footer wie gewohnt (funktioniert jetzt uneingeschränkt auf ALLEN Seiten)
                 if ($this->showFooter) {
-                    if (!empty($filename)) 
-                            $filename = $filename . " - ";
-                    $mpdf->SetHTMLFooter('<div style="text-align: right; font-weight: normal; font-style: normal; font-size: 8pt;">'
-                            . $filename . ' Seite {PAGENO} von {nbpg} </div> ');
-                 }
+                    if (!empty($filename)) {
+                        $filename = $filename . " - ";
+                    }
+                    $mpdf->SetHTMLFooter('
+                        <div style="text-align: right; font-weight: normal; font-style: normal; font-size: 8pt;">'
+                            . $filename . 'Seite {PAGENO} von {nbpg}
+                        </div>');
+                }
 
-                $styledHtml = $firstPageStyle . $this->wrapHtml($html);
+                // 3. Header-Tag ganz am Anfang des Body injizieren
+                $styledHtml = $this->wrapHtml($firstPageHeader . $html);
+
 		if (DEBUG) {
 			$myfile = fopen("/tmp/tst3.txt", "w");
 			fwrite($myfile, $styledHtml);
