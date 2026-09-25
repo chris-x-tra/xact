@@ -153,17 +153,24 @@ class MdToPdfService {
 
                 if ($this->showWindowGuide) {
                     $svgContent .= '
-                    <!-- DIN 5008 Sichtfenster (Hellgraue Kreuze) -->
-                    <g stroke="#cccccc" stroke-width="0.25mm">
-                        <!-- Ecke Links-Oben (20mm, 55mm) -->
-                        <line x1="17mm" y1="55mm" x2="23mm" y2="55mm"/><line x1="20mm" y1="52mm" x2="20mm" y2="58mm"/>
-                        <!-- Ecke Rechts-Oben (110mm, 55mm) -->
-                        <line x1="107mm" y1="55mm" x2="113mm" y2="55mm"/><line x1="110mm" y1="52mm" x2="110mm" y2="58mm"/>
-                        <!-- Ecke Links-Unten (20mm, 100mm) -->
-                        <line x1="17mm" y1="100mm" x2="23mm" y2="100mm"/><line x1="20mm" y1="97mm" x2="20mm" y2="103mm"/>
-                        <!-- Ecke Rechts-Unten (110mm, 100mm) -->
-                        <line x1="107mm" y1="100mm" x2="113mm" y2="100mm"/><line x1="110mm" y1="97mm" x2="110mm" y2="103mm"/>
-                    </g>';
+                        <!-- DIN 5008 Sichtfenster-Eckmarkierungen (Hellgraue L-Ecken via line) -->
+                        <g stroke="#d8d8d8" stroke-width="0.20mm">
+                            <!-- Ecke Links-Oben -->
+                            <line x1="15mm" y1="50mm" x2="18mm" y2="50mm"/>
+                            <line x1="15mm" y1="50mm" x2="15mm" y2="53mm"/>
+
+                            <!-- Ecke Rechts-Oben -->
+                            <line x1="105mm" y1="50mm" x2="102mm" y2="50mm"/>
+                            <line x1="105mm" y1="50mm" x2="105mm" y2="53mm"/>
+
+                            <!-- Ecke Links-Unten -->
+                            <line x1="15mm" y1="90mm" x2="18mm" y2="90mm"/>
+                            <line x1="15mm" y1="90mm" x2="15mm" y2="87mm"/>
+
+                            <!-- Ecke Rechts-Unten -->
+                            <line x1="105mm" y1="90mm" x2="102mm" y2="90mm"/>
+                            <line x1="105mm" y1="90mm" x2="105mm" y2="87mm"/>
+                        </g>';
                 }
 
                 $svgContent .= '</svg>';
